@@ -5,6 +5,7 @@
 SDL_Window *window = NULL;
 SDL_Renderer *renderer = NULL;
 int isGameRunning = FALSE;
+int ticksLastFrame = 0;
 
 int playerX, playerY;
 
@@ -15,7 +16,7 @@ int initializeWindow() {
   }
   window = SDL_CreateWindow(NULL, SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED,
                             WINDOW_WIDTH, WINDOW_HEIGHT, SDL_WINDOW_BORDERLESS);
-    //lots of if states low performance 
+  // lots of if states low performance
   if (!window) {
     fprintf(stderr, "Error creating SDL window.\n");
     return FALSE;
@@ -44,6 +45,8 @@ void setup() {
 void processInput() {
   SDL_Event event;
   SDL_PollEvent(&event);
+
+  // checks if user closes game using EscapeKey
   switch (event.type) {
   case SDL_QUIT: {
     isGameRunning = FALSE;
@@ -57,12 +60,19 @@ void processInput() {
 }
 
 void update() {
-  playerX += 1;
-  playerY += 1;
+  // waste time until we reach target frame time length (Sets FPS)
+  while (!SDL_TICKS_PASSED(SDL_GetTicks(), ticksLastFrame + FRAME_TIME_LENGHT));
+
+
+  float deltaTime = (SDL_GetTicks() - ticksLastFrame) / 1000.0f;
+  ticksLastFrame = SDL_GetTicks();
+
+  playerX += 50 * deltaTime;
+  playerY += 50 * deltaTime;
 }
 
 void render() {
-  SDL_SetRenderDrawColor(renderer, 0, 0, 0, 255);
+  SDL_SetRenderDrawColor(renderer, 10, 10, 10, 255);
   SDL_RenderClear(renderer);
 
   SDL_SetRenderDrawColor(renderer, 255, 255, 0, 255);
