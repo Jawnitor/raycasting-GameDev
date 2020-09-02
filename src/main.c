@@ -87,6 +87,7 @@ int main() {
 
   setup();
 
+  //mainGameLoop
   while (isGameRunning) {
     processInput();
     update();
