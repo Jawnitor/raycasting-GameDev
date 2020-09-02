@@ -1,0 +1,15 @@
+﻿BasedOnStyle: LLVM
+AlignTrailingComments: 'true'
+AllowAllArgumentsOnNextLine: 'true'
+AllowAllConstructorInitializersOnNextLine: 'true'
+AllowAllParametersOfDeclarationOnNextLine: 'true'
+AllowShortBlocksOnASingleLine: 'false'
+AllowShortCaseLabelsOnASingleLine: 'true'
+
+AllowShortFunctionsOnASingleLine: 'Empty'
+AllowShortIfStatementsOnASingleLine: 'Always'
+AllowShortLambdasOnASingleLine: 'All'
+AllowShortLoopsOnASingleLine: 'true'
+
+IndentWidth: '2'
+ColumnLimit: '90'
