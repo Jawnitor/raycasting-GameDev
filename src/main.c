@@ -2,6 +2,21 @@
 #include <SDL2/SDL.h>
 #include <stdio.h>
 
+const int map[MAP_NUM_ROWS][MAP_NUM_COLS] = {
+    {1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1},
+    {1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1},
+    {1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1},
+    {1, 0, 0, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 0, 1},
+    {1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1},
+    {1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 1},
+    {1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 1},
+    {1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 1},
+    {1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 1, 0, 0, 1},
+    {1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1},
+    {1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1},
+    {1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1},
+    {1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1}};
+
 SDL_Window *window = NULL;
 SDL_Renderer *renderer = NULL;
 int isGameRunning = FALSE;
@@ -37,10 +52,7 @@ void destroyWindow() {
   SDL_Quit();
 }
 
-void setup() {
-  playerX = 0;
-  playerY = 0;
-}
+void setup() {}
 
 void processInput() {
   SDL_Event event;
@@ -60,13 +72,24 @@ void processInput() {
 }
 
 void update() {
-  // waste time until we reach target frame time length (Sets FPS)
-  while (!SDL_TICKS_PASSED(SDL_GetTicks(), ticksLastFrame + FRAME_TIME_LENGHT));
+  /*example of bad performace
+    waste time until we reach target frame time length (Sets FPS)
+    in the future we will not be while loop as it takes up  all the
+    porcessor and slows down our PC and our app
+    while (!SDL_TICKS_PASSED(SDL_GetTicks(), ticksLastFrame + FRAME_TIME_LENGHT));
+  */
 
+  // Compute how long we have until the reach the target frame in milliseconds
+  int timeToWait = FRAME_TIME_LENGHT - (SDL_GetTicks() - ticksLastFrame);
+  // Only delay is running too fast
+  if (timeToWait > 0 && timeToWait <= FRAME_TIME_LENGHT) SDL_Delay(timeToWait);
 
+  // compute the delta time to be used as an update factor when changing game objects
   float deltaTime = (SDL_GetTicks() - ticksLastFrame) / 1000.0f;
+  // store milliseconds of the current frame to be used in the future
   ticksLastFrame = SDL_GetTicks();
 
+  // TODO remember to updater game objects as a function of delta time
   playerX += 50 * deltaTime;
   playerY += 50 * deltaTime;
 }
@@ -75,19 +98,19 @@ void render() {
   SDL_SetRenderDrawColor(renderer, 10, 10, 10, 255);
   SDL_RenderClear(renderer);
 
-  SDL_SetRenderDrawColor(renderer, 255, 255, 0, 255);
-  SDL_Rect rect = {playerX, playerY, 20, 20};
-  SDL_RenderFillRect(renderer, &rect);
-
+  // TODO:
+  // Render Game Objects
+  
   SDL_RenderPresent(renderer);
 }
 
+// program entery point
 int main() {
   isGameRunning = initializeWindow();
 
   setup();
 
-  //mainGameLoop
+  // mainGameLoop
   while (isGameRunning) {
     processInput();
     update();
